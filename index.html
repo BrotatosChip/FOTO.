@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-mode">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <div id="flash"></div>
 
     <header>
@@ -41,29 +42,103 @@
     <main>
         <section id="view-home" class="view active">
             <h1 class="main-logo">FOTO<span class="dot">.</span></h1>
-            <button class="start-btn" onclick="startApp()" id="btn-start">START SESSION</button>
+            <div class="home-actions" style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                <button class="start-btn" onclick="startApp()" id="btn-start">START SESSION</button>
+                
+                <div class="duo-row" style="display: flex; gap: 10px;">
+                    <button class="s-btn" onclick="initDuo(true)" style="font-size: 11px; padding: 10px 20px;">HOST DUO</button>
+                    <button class="s-btn" onclick="initDuo(false)" style="font-size: 11px; padding: 10px 20px;">JOIN DUO</button>
+                </div>
+            </div>
         </section>
 
         <section id="view-layout" class="view">
             <h2 class="view-title" id="title-layout">Select Style</h2>
-            <div class="layout-grid">
-                <div class="layout-card" onclick="selectLayout('strip')">
-                    <div class="l-preview strip-p"><span></span><span></span><span></span></div>
-                    <h3>Classic Strip</h3>
+            
+            <div class="layout-carousel">
+                <button class="nav-arrow left" onclick="scrollLayouts(-1)">&#8249;</button>
+                
+                <div class="layout-viewport" id="layout-viewport">
+                    <div class="layout-track">
+                        <div class="layout-card" onclick="selectLayout('A')">
+                            <div class="l-preview v-strip"><span></span><span></span><span></span><div class="p-txt">abc</div></div>
+                            <label>STYLE A</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('B')">
+                            <div class="l-preview v-strip"><span></span><span></span><span></span><span></span></div>
+                            <label>STYLE B</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('C')">
+                            <div class="l-preview v-strip"><div class="p-txt">TITLE</div><span></span><span></span><span></span><span></span></div>
+                            <label>STYLE C</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('D')">
+                            <div class="l-preview v-strip"><span class="big"></span><span class="big"></span></div>
+                            <label>STYLE D</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('E')">
+                            <div class="l-preview v-strip"><span></span><span></span><span></span><div class="p-logo">●</div></div>
+                            <label>STYLE E</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('F')">
+                            <div class="l-preview v-grid"><span></span><span></span><span></span><span></span></div>
+                            <label>STYLE F</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('G')">
+                            <div class="l-preview v-strip"><div class="p-dot">.</div><span></span><span></span><span></span><div class="p-dot">.</div></div>
+                            <label>STYLE G</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('H')">
+                            <div class="l-preview v-strip"><span class="land"></span><span class="land"></span><div class="p-txt">...</div></div>
+                            <label>STYLE H</label>
+                        </div>
+
+                        <div class="layout-card" onclick="selectLayout('I')">
+                            <div class="l-preview h-print"><span class="full"></span><div class="p-txt-h">FOTO.</div></div>
+                            <label>STYLE I</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('J')">
+                            <div class="l-preview h-print"><span class="top-big"></span><div class="row"><span></span><span></span><span></span></div></div>
+                            <label>STYLE J</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('K')">
+                            <div class="l-preview h-grid"><span></span><span></span><span></span><span></span></div>
+                            <label>STYLE K</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('L')">
+                            <div class="l-preview h-grid-side"><div class="p-side">txt</div><div class="g-2x2"><span></span><span></span><span></span><span></span></div></div>
+                            <label>STYLE L</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('M')">
+                            <div class="l-preview h-print"><div class="p-txt-h">TITLE</div><div class="row"><span></span><span></span></div></div>
+                            <label>STYLE M</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('N')">
+                            <div class="l-preview h-grid"><span></span><span></span><span></span><span></span></div>
+                            <label>STYLE N</label>
+                        </div>
+                        <div class="layout-card" onclick="selectLayout('O')">
+                            <div class="l-preview h-print"><div class="row"><span></span><span></span></div></div>
+                            <label>STYLE O</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="layout-card" onclick="selectLayout('grid')">
-                    <div class="l-preview grid-p"><span></span><span></span><span></span><span></span></div>
-                    <h3>Modern Grid</h3>
-                </div>
+
+                <button class="nav-arrow right" onclick="scrollLayouts(1)">&#8250;</button>
             </div>
         </section>
 
         <section id="view-camera" class="view">
             <div class="cam-wrapper">
                 <div class="cam-box">
+                    <div id="duo-status" class="duo-badge hidden">
+                        <span class="pulse-dot"></span>
+                        <span id="duo-partner-name">LINKED TO PARTNER</span>
+                    </div>
+
                     <video id="video" autoplay playsinline></video>
                     <div id="countdown" class="hidden">3</div>
-                    <div class="snap-badge"><span id="count-num">0</span>/4</div>
+                    <div class="snap-badge"><span id="count-num">0</span>/<span id="max-num">4</span></div>
                 </div>
                 
                 <div class="cam-controls">
@@ -74,7 +149,7 @@
                         <button class="f-pill" onclick="setFilter('brightness(1.2) saturate(1.5)')">Vivid</button>
                     </div>
                     <div class="shutter-container">
-                        <button id="shutter" class="shutter-btn" onclick="runCapture()"></button>
+                        <button id="shutter" class="shutter-btn" onclick="syncShutter()"></button>
                     </div>
                 </div>
             </div>
@@ -85,17 +160,34 @@
                 <div class="preview-area">
                     <div id="final-strip" class="photo-strip">
                         <div id="strip-inner"></div>
-                        <div class="strip-footer">FOTO. — 2026</div>
-                    </div>
+                        <div class="strip-footer" id="strip-footer-text">FOTO. — 2026</div>
+                    </div> 
                 </div>
                 <div class="controls-area">
-                    <h3 id="title-frame">Frame Color</h3>
+                    <h3 id="title-frame">Frame Design</h3>
+                    
                     <div class="color-row">
-                        <button class="c-dot" style="background:#fff" onclick="changeColor('#fff')"></button>
-                        <button class="c-dot" style="background:#fce4ec" onclick="changeColor('#fce4ec')"></button>
-                        <button class="c-dot" style="background:#111" onclick="changeColor('#111')"></button>
+                        <button class="c-dot" style="background:#fff" onclick="changeDesign('white')" title="White"></button>
+                        <button class="c-dot" style="background:#fce4ec" onclick="changeDesign('pink')" title="Pink"></button>
+                        <button class="c-dot film-opt" onclick="changeDesign('film')" title="Film Strip"></button>
+                        <button class="c-dot" style="background:#f4f1ea; border-radius: 4px;" onclick="changeDesign('90s')" title="90s Magazine"></button>
+                        <button class="c-dot" style="background:#eee; border-bottom: 8px solid #ccc; height: 38px;" onclick="changeDesign('polaroid')" title="Polaroid"></button>
                     </div>
-                    <div class="action-stack">
+
+                    <div class="color-row" style="margin-top: 10px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;">
+                        <button class="c-dot" style="background:#d4e09b" onclick="changeDesign('#d4e09b')" title="Matcha"></button>
+                        <button class="c-dot" style="background:#e2d1f9" onclick="changeDesign('#e2d1f9')" title="Lavender"></button>
+                        <button class="c-dot" style="background:#cae9ff" onclick="changeDesign('#cae9ff')" title="Sky"></button>
+                        <button class="c-dot" style="background:#fff4bd" onclick="changeDesign('#fff4bd')" title="Butter"></button>
+                        <button class="c-dot" style="background:#d8ae94" onclick="changeDesign('#d8ae94')" title="Clay"></button>
+                        <button class="c-dot" style="background:#b2ac88" onclick="changeDesign('#b2ac88')" title="Sage"></button>
+                        <button class="c-dot" style="background:#e1ad01" onclick="changeDesign('#e1ad01')" title="Mustard"></button>
+                        <button class="c-dot" style="background:#4d7c8a" onclick="changeDesign('#4d7c8a')" title="Teal"></button>
+                        <button class="c-dot" style="background:#f8c8dc" onclick="changeDesign('#f8c8dc')" title="Blush"></button>
+                        <button class="c-dot" style="background:#a9d1d1" onclick="changeDesign('#a9d1d1')" title="Mint"></button>
+                    </div>
+
+                    <div class="action-stack" style="margin-top: 30px;">
                         <button class="p-btn" onclick="finishSession()" id="btn-save">Save & Finish</button>
                         <button class="s-btn" onclick="location.reload()" id="btn-discard">Discard</button>
                     </div>
@@ -103,6 +195,17 @@
             </div>
         </section>
     </main>
+
+    <a href="spotlight.html" class="spotlight-btn" id="spotlight-btn">
+        <div class="spotlight-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+        </div>
+        <span id="lbl-spotlight">Memories</span>
+    </a>
 
     <canvas id="hidden-canvas" style="display:none;"></canvas>
     <script src="script.js"></script>
